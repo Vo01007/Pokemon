@@ -1,0 +1,54 @@
+body{
+  background-color: #1b1c31;
+}
+header{
+  background-color: #1b1c31;
+  color: white;
+  text-align: center;
+}
+.container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f6f8;
+  margin: 0 auto;
+  width: 30rem;
+  border-radius: 0.5rem;
+}
+.container h5{
+  text-align: center;
+}
+.searchContainer p{
+  margin: 0.5rem;
+}
+.searchContainer button{
+  width: 5rem;
+  border-radius: 2rem;
+  height: 2rem;
+  background-color: #7825a5;
+  color: white;
+  border: none;
+}
+.searchContainer input{
+  width: 8rem;
+  height: 1.4rem;
+}
+.infoContainer{
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f1f6;
+  width: 90%;
+}
+.infoContainer .name{
+  margin: 0.2rem;
+  text-size: 0.9rem;
+}
+.infoContainer .size{
+  margin: 0.2rem;
+  text-size: 0.7rem;
+}
+.infoContainer img{
+  align-self: center;
+  width: 10rem;
+}
