@@ -1,4 +1,5 @@
 const apiUrl = 'https://pokeapi-proxy.freecodecamp.rocks/api/pokemon'
+let data = ''
 
 async function fetchData() {
   try {
@@ -13,29 +14,35 @@ async function fetchData() {
     console.error('Ошибка при получении данных:', error)
   }
 }
+
+
+// data + новые ключи = data со всеми покемонами
+
 createTable = (data) => {
-  const containerElement = document.getElementsByClassName('infoContainer');
-  const table = document.createElement('table')
+  const containerElement = document.querySelector('.infoContainer');
 
-  const tbody = document.createElement('tbody')
-  data.forEach((item) => {
-    const row = document.createElement('tr')
+    const table = document.createElement('table')
 
-    const idCell = document.createElement('td')
-    idCell.textContent = item.id
-    let nameCell = document.createElement('td')
-    nameCell.textContent = item.name
+    const tbody = document.createElement('tbody')
+    data.slice(0,50).forEach((item) => {
+      const row = document.createElement('tr')
 
-    row.setAttribute('data-url', item.url);
+      const idCell = document.createElement('td')
+      idCell.textContent = item.id
+      let nameCell = document.createElement('td')
+      nameCell.textContent = item.name
 
-    row.appendChild(idCell)
-    row.appendChild(nameCell)
+      row.setAttribute('data-url', item.url);
 
-    tbody.appendChild(row);
+      row.appendChild(idCell)
+      row.appendChild(nameCell)
 
-  })
-  table.appendChild(tbody)
-  containerElement.appendChild(table);
+      tbody.appendChild(row);
+
+    })
+    table.appendChild(tbody)
+    containerElement.appendChild(table);
+
 }
 
 fetchData()
