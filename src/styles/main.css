@@ -84,3 +84,20 @@ header{
   background-color: #7825a5;
   height: 1.9rem;
 }
+.pokemonTable tbody{
+  margin: 0 0 2rem;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+.pokemonTable tbody tr{
+  margin: 0.2rem;
+  background-color: #7825a5;
+  height: 1.9rem;
+}
+.pokemonTable thead tr{
+  margin: 0.2rem;
+  background-color: #7825a5;
+  height: 1.9rem;
+  color : white;
+}

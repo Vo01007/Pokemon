@@ -55,7 +55,19 @@ createTable = (data) => {
   containerElement.innerHTML = '';
 
     const table = document.createElement('table')
+    table.classList.add('pokemonTable')
+    const thead = document.createElement('thead');
     const tbody = document.createElement('tbody')
+
+    const headers = ['ID', 'Name', 'Type', 'Height'];
+    const headerRow = document.createElement('tr')
+    headers.forEach(headerText => {
+      const th = document.createElement('th')
+      th.textContent = headerText
+      headerRow.appendChild(th)
+    })
+    thead.appendChild(headerRow)
+
     data.forEach((item) => {
       const row = document.createElement('tr')
 
@@ -76,6 +88,7 @@ createTable = (data) => {
       row.appendChild(heightCell)
       tbody.appendChild(row)
     })
+    table.appendChild(thead);
     table.appendChild(tbody)
     containerElement.appendChild(table)
 }
