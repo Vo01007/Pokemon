@@ -39,7 +39,7 @@ async function fetchAdditionalData(pokemonList) {
         base_experience: details.base_experience,
         height: details.height,
         weight: details.weight,
-        types: details.types.map((typeInfo) => typeInfo.type.name).join(', '),
+        types: details.types.map((typeInfo) => typeInfo.type.name),
         sprite: details.sprites?.front_default || 'Нет изображения',
         stats: details.stats.map((stat) => ({
           name: stat.stat.name,
@@ -98,20 +98,23 @@ createTable = (data) => {
   containerElement.appendChild(table)
 }
 
-async function fetchPokemonDetails(nameOrId) {
-  try{
-    if (Array.isArray(data)) {
-      const pokemon = data.find(p => p.name.toLowerCase() === nameOrId.toLowerCase() || p.id === parseInt(nameOrId))
-      if (pokemon) {
-        updateContent('card',pokemon)
-      }else {
-        console.error('data не массив:',data)
-      }
-    }
-  }catch(error) {
-    console.error('Ошибка при воеске покемона:',error)
+const fetchPokemonDetails = (pokemonIdOrName) => {
+  if (!pokemonIdOrName) {
+    console.error("Pokemon Id or Name is missing")
+    return
   }
+  const url = `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/${pokemonIdOrName}`
+  console.log("Fetching details from:", url)
+  fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        updateContent('card',data)
+      })
+      .catch(error => {
+        console.error("Error fetching Pokemon details:", error);
+      })
 }
+
 
 const createPokemonCard = (pokemon) => {
   const container = document.createElement('div');
@@ -125,22 +128,57 @@ const createPokemonCard = (pokemon) => {
   size.classList.add('size')
   size.textContent = `Weight: ${pokemon.weight} Height: ${pokemon.height}`
 
-  const img = document.createElement('img')
-  img.src = pokemon.sprite
+  const imageElement = document.createElement('img')
+  imageElement.src = pokemon.sprite
 
   const typesContainer = document.createElement('div')
   typesContainer.classList.add('element')
-  if (pokemon.types && Arrau.isArray(pokemon.types)) {
-    pokemon.types.forEach((type) => {
+
+  if (pokemon.types && Array.isArray(pokemon.types) && pokemon.types.length > 0) {
+    // Получаем первый тип для использования в качестве фона
+    const firstType = pokemon.types[0]?.type?.name;
+
+    if (firstType) {
+      // Обновляем цвет фона в зависимости от первого типа
+      updateElementStyle(typesContainer, firstType);
+
+      // Добавляем каждый тип
+      pokemon.types.forEach((typeInfo) => {
+        const typeName = typeInfo?.type?.name;
+
+        if (typeName) {
+          const typeElement = document.createElement('p');
+          typeElement.textContent = typeName.toUpperCase();
+          typesContainer.appendChild(typeElement);
+        } else {
+          console.error('Тип не имеет поля "name" или неправильная структура:', typeInfo);
+        }
+      });
+    } else {
+      console.error('Первый тип не имеет поля "name" или структура неправильная:', pokemon.types[0]);
+    }
+  } else {
+    const typeElement = document.createElement('p');
+    typeElement.textContent = 'N/A';
+    typesContainer.appendChild(typeElement);
+  }
+   /* pokemon.types.forEach((typeInfo) => {
+      console.log('Type:', typeInfo);
       const typeElement = document.createElement('p')
-      typeElement.textContent = type.toUpperCase()
+      if (typeInfo.type && typeof typeInfo.type.name === 'string') {
+        typeElement.textContent = typeInfo.type.name.toUpperCase()
+      }else{
+        console.error('Invalid type object:',typeInfo)
+        typeElement.textContent = 'N/A'
+      }
+      updateElementStyle(typeElement)
       typesContainer.appendChild(typeElement)
     })
   }else {
     const typeElement = document.createElement('p')
     typeElement.textContent = 'N/A'
     typesContainer.appendChild(typeElement)
-  }
+  }*/
   const statsContainer = document.createElement('div')
   statsContainer.classList.add('stats')
   const statsTable = document.createElement('table')
@@ -178,18 +216,42 @@ const createPokemonCard = (pokemon) => {
   statsContainer.appendChild(statsTable)
   container.appendChild(name)
   container.appendChild(size)
-  container.appendChild(img)
+  container.appendChild(imageElement)
   container.appendChild(typesContainer)
   container.appendChild(statsContainer)
   return container
+}
+
+const updateElementStyle = (element,type) => {
+  const text = type.trim().toLowerCase()
+
+  switch (text) {
+    case 'grass':
+    case 'poison':
+      element.style.backgroundColor = 'green'
+      break
+
+    case 'fire':
+      element.style.backgroundColor = 'orange'
+      break
+
+    case 'water':
+      element.style.backgroundColor = 'aqua'
+      break
+
+    case 'electric':
+      element.style.backgroundColor = 'yellow'
+      break
+    default:
+      element.style.backgroundColor = 'gray'
+  }
 }
 
 const updateContent = (type, content) => {
   containerElement.innerHTML = ''
 
   if (type === 'table') {
-    const table = createTable(content)
-    containerElement.appendChild(table)
+    createTable(content)
   } else if (type === 'card') {
     const card = createPokemonCard(content)
     containerElement.appendChild(card)
