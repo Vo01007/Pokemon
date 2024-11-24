@@ -31,7 +31,7 @@ async function fetchAdditionalData(pokemonList) {
         return null
       }
       const details = await response.json()
-
+      console.log(details.sprites);
       return {
         id: pokemon.id,
         name: pokemon.name,
@@ -40,7 +40,7 @@ async function fetchAdditionalData(pokemonList) {
         height: details.height,
         weight: details.weight,
         types: details.types.map((typeInfo) => typeInfo.type.name),
-        sprite: details.sprites?.front_default || 'Нет изображения',
+        sprite: details.sprites?.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png',
         stats: details.stats.map((stat) => ({
           name: stat.stat.name,
           value: stat.base_stat
@@ -129,7 +129,13 @@ const createPokemonCard = (pokemon) => {
   size.textContent = `Weight: ${pokemon.weight} Height: ${pokemon.height}`
 
   const imageElement = document.createElement('img')
-  imageElement.src = pokemon.sprite
+  const spriteUrl = pokemon.sprite || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png';  // Резервная картинка
+
+  if (spriteUrl && spriteUrl !== 'undefined') {
+    imageElement.src = spriteUrl;
+  } else {
+    imageElement.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png';  // Резервное изображение на случай ошибки
+  }
 
   const typesContainer = document.createElement('div')
   typesContainer.classList.add('element')
