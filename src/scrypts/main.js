@@ -234,6 +234,7 @@ const updateElementStyle = (element,type) => {
   switch (text) {
     case 'grass':
     case 'poison':
+    case 'bug':
       element.style.backgroundColor = 'green'
       break
 
@@ -248,6 +249,15 @@ const updateElementStyle = (element,type) => {
     case 'electric':
       element.style.backgroundColor = 'yellow'
       break
+
+    case 'fairy':
+      element.style.backgroundColor = 'pink'
+      break
+
+    case 'ground':
+      element.style.backgroundColor = 'brown'
+      break
+
     default:
       element.style.backgroundColor = 'gray'
   }
