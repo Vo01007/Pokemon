@@ -129,7 +129,7 @@ const createPokemonCard = (pokemon) => {
   size.textContent = `Weight: ${pokemon.weight} Height: ${pokemon.height}`
 
   const imageElement = document.createElement('img')
-  const spriteUrl = pokemon.sprite || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png';  // Резервная картинка
+  const spriteUrl = pokemon.sprites.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png';  // Резервная картинка
 
   if (spriteUrl && spriteUrl !== 'undefined') {
     imageElement.src = spriteUrl;
