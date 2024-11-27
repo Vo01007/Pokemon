@@ -33,6 +33,14 @@ header{
   color: white;
   border: none;
 }
+.clearButton {
+  width: 5rem;
+  border-radius: 2rem;
+  height: 2rem;
+  background-color: #7825a5;
+  color: white;
+  border: none;
+}
 .searchContainer input{
   width: 8rem;
   height: 1.4rem;

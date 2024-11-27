@@ -1,5 +1,5 @@
 const apiUrl = 'https://pokeapi-proxy.freecodecamp.rocks/api/pokemon'
-let data = []
+
 const containerElement = document.querySelector('.infoContainer');
 
 async function fetchData() {
@@ -31,7 +31,6 @@ async function fetchAdditionalData(pokemonList) {
         return null
       }
       const details = await response.json()
-      console.log(details.sprites);
       return {
         id: pokemon.id,
         name: pokemon.name,
@@ -40,7 +39,7 @@ async function fetchAdditionalData(pokemonList) {
         height: details.height,
         weight: details.weight,
         types: details.types.map((typeInfo) => typeInfo.type.name),
-        sprite: details.sprites?.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png',
+        sprite: details.sprites?.front_default,
         stats: details.stats.map((stat) => ({
           name: stat.stat.name,
           value: stat.base_stat
@@ -54,8 +53,6 @@ async function fetchAdditionalData(pokemonList) {
 }
 
 
-// data + новые ключи = data со все__+ми покемонами
-
 createTable = (data) => {
   containerElement.innerHTML = '';
 
@@ -64,7 +61,7 @@ createTable = (data) => {
   const thead = document.createElement('thead');
   const tbody = document.createElement('tbody')
 
-  const headers = ['ID', 'Name', 'Type', 'Height'];
+  const headers = ['ID', 'Name', 'Type', 'Height', 'Actions'];
   const headerRow = document.createElement('tr')
   headers.forEach(headerText => {
     const th = document.createElement('th')
@@ -84,13 +81,22 @@ createTable = (data) => {
     typesCell.textContent = item.types || 'N/A'
     const heightCell = document.createElement('td')
     heightCell.textContent = item.height || 'N/A'
-
-    row.setAttribute('data-url', item.url);
+    const actionCell = document.createElement('td')
+    const eyeIcon = document.createElement('img')
+    eyeIcon.src = 'https://cdn.icon-icons.com/icons2/629/PNG/96/eye-visible-outlined-interface-symbol_icon-icons.com_57844.png'
+    eyeIcon.style.cursor = 'pointer'
+    eyeIcon.style.width = '2rem'
+    eyeIcon.addEventListener('click', () => {
+      localStorage.setItem('selectedPokemon', JSON.stringify(item))
+      window.location.href = './src/pages/pokemonCard.html'
+    })
+    actionCell.appendChild(eyeIcon)
 
     row.appendChild(idCell)
     row.appendChild(nameCell)
     row.appendChild(typesCell)
     row.appendChild(heightCell)
+    row.appendChild(actionCell)
     tbody.appendChild(row)
   })
   table.appendChild(thead);
@@ -98,7 +104,23 @@ createTable = (data) => {
   containerElement.appendChild(table)
 }
 
-const fetchPokemonDetails = (pokemonIdOrName) => {
+const filterTable = (searchTerm) => {
+  const rows = document.querySelectorAll('.pokemonTable tbody tr')
+  rows.forEach(row => {
+    const nameCell = row.cells[1].textContent.toLowerCase()
+    const idCell = row.cells[0].textContent
+    if (
+        nameCell === searchTerm||
+        idCell === searchTerm
+    ){
+      row.style.display = ''
+    }else {
+      row.style.display = 'none'
+    }
+  })
+}
+
+/*const fetchPokemonDetails = (pokemonIdOrName) => {
   if (!pokemonIdOrName) {
     console.error("Pokemon Id or Name is missing")
     return
@@ -113,9 +135,9 @@ const fetchPokemonDetails = (pokemonIdOrName) => {
       .catch(error => {
         console.error("Error fetching Pokemon details:", error);
       })
-}
+}*/
 
-
+/*
 const createPokemonCard = (pokemon) => {
   const container = document.createElement('div');
   container.classList.add('pokemonCard');
@@ -129,13 +151,7 @@ const createPokemonCard = (pokemon) => {
   size.textContent = `Weight: ${pokemon.weight} Height: ${pokemon.height}`
 
   const imageElement = document.createElement('img')
-  const spriteUrl = pokemon.sprites.front_default || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png';  // Резервная картинка
-
-  if (spriteUrl && spriteUrl !== 'undefined') {
-    imageElement.src = spriteUrl;
-  } else {
-    imageElement.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/other.png';  // Резервное изображение на случай ошибки
-  }
+  const spriteUrl = pokemon.sprites.front_default
 
   const typesContainer = document.createElement('div')
   typesContainer.classList.add('element')
@@ -168,23 +184,7 @@ const createPokemonCard = (pokemon) => {
     typeElement.textContent = 'N/A';
     typesContainer.appendChild(typeElement);
   }
-   /* pokemon.types.forEach((typeInfo) => {
-      console.log('Type:', typeInfo);
-      const typeElement = document.createElement('p')
-      if (typeInfo.type && typeof typeInfo.type.name === 'string') {
-        typeElement.textContent = typeInfo.type.name.toUpperCase()
-      }else{
-        console.error('Invalid type object:',typeInfo)
-        typeElement.textContent = 'N/A'
-      }
-      updateElementStyle(typeElement)
-      typesContainer.appendChild(typeElement)
-    })
-  }else {
-    const typeElement = document.createElement('p')
-    typeElement.textContent = 'N/A'
-    typesContainer.appendChild(typeElement)
-  }*/
+
   const statsContainer = document.createElement('div')
   statsContainer.classList.add('stats')
   const statsTable = document.createElement('table')
@@ -266,25 +266,30 @@ const updateElementStyle = (element,type) => {
 const updateContent = (type, content) => {
   containerElement.innerHTML = ''
 
-  if (type === 'table') {
-    createTable(content)
-  } else if (type === 'card') {
+if (type === 'card') {
     const card = createPokemonCard(content)
     containerElement.appendChild(card)
   } else {
     containerElement.innerHTML = '<p>Нет данных</p>'
   }
-}
+}*/
 
 document.querySelector('.searchButton').addEventListener('click', e => {
   const searchInput = document.querySelector('.searchInput').value.trim().toLowerCase()
 
   if (searchInput) {
-    fetchPokemonDetails(searchInput)
+    filterTable(searchInput)
   } else {
     alert('Введите имя или ID')
   }
 })
 
+document.querySelector('.clearButton').addEventListener('click', () => {
+  document.querySelector('.searchInput').value = ''; // Очистить поле ввода
+  const rows = document.querySelectorAll('.pokemonTable tbody tr');
+  rows.forEach((row) => {
+    row.style.display = ''; // Показать все строки
+  });
+});
 
 fetchData()
