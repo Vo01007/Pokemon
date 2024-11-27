@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     createPokemonCard(pokemon)
 
-    const backButton = document.querySelector('.backbutton')
+    const backButton = document.querySelector('.backButton')
     backButton.addEventListener('click', () => {
         window.location.href = '../../index.html'
     })
@@ -39,27 +39,20 @@ const createPokemonCard = (pokemon) => {
     typesContainer.classList.add('element')
 
     if (pokemon.types && Array.isArray(pokemon.types) && pokemon.types.length > 0) {
-        // Получаем первый тип для использования в качестве фона
-        const firstType = pokemon.types[0]?.type?.name;
+        const firstType = pokemon.types[0];
 
         if (firstType) {
-            // Обновляем цвет фона в зависимости от первого типа
+            // Обновляем цвет фона в зависимости от типа
             updateElementStyle(typesContainer, firstType);
 
             // Добавляем каждый тип
             pokemon.types.forEach((typeName) => {
-                const typeElement = typeName?.type?.name;
-
-                if (typeName) {
-                    const typeElement = document.createElement('p');
-                    typeElement.textContent = typeName.toUpperCase();
-                    typesContainer.appendChild(typeElement);
-                } else {
-                    console.error('Тип не имеет поля "name" или неправильная структура:', typeInfo);
-                }
+                const typeElement = document.createElement('p');
+                typeElement.textContent = typeName.toUpperCase();
+                typesContainer.appendChild(typeElement);
             });
         } else {
-            console.error('Первый тип не имеет поля "name" или структура неправильная:', pokemon.types[0]);
+            console.error('Первый тип не имеет значения или структура неправильная:', pokemon.types[0]);
         }
     } else {
         const typeElement = document.createElement('p');
