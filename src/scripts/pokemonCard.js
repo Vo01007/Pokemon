@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     const pokemon = JSON.parse(localStorage.getItem("selectedPokemon"))
-    console.log('Данные из localStorage:', localStorage.getItem('selectedPokemon'));
-    if (pokemon) {
-        console.log('Данные покемона:', pokemon);
+    console.log('Данные из localStorage:', localStorage.getItem('selectedPokemon'))
+    console.log('Парсинг покемона:', pokemon)
+
+    if (!pokemon) {
         alert('Покемон не выбран.')
         window.location.href = '../../index.html'
         return
@@ -46,8 +47,8 @@ const createPokemonCard = (pokemon) => {
             updateElementStyle(typesContainer, firstType);
 
             // Добавляем каждый тип
-            pokemon.types.forEach((typeInfo) => {
-                const typeName = typeInfo?.type?.name;
+            pokemon.types.forEach((typeName) => {
+                const typeElement = typeName?.type?.name;
 
                 if (typeName) {
                     const typeElement = document.createElement('p');
@@ -84,8 +85,8 @@ const createPokemonCard = (pokemon) => {
             const row = document.createElement('tr')
             const statNameCell = document.createElement('td')
             const statValueCell = document.createElement('td')
-            statNameCell.textContent = `${stat.stat.name.charAt(0).toUpperCase() + stat.stat.name.slice(1)}:`
-            statValueCell.textContent = stat.base_stat
+            statNameCell.textContent = `${stat.name.charAt(0).toUpperCase() + stat.name.slice(1)}:`
+            statValueCell.textContent = stat.value
             row.appendChild(statNameCell)
             row.appendChild(statValueCell)
             statsTable.appendChild(row)
