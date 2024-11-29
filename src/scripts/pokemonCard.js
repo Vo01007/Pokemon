@@ -112,6 +112,7 @@ const updateElementStyle = (element,type) => {
             break;
 
         case 'dragon':
+        case 'flying':
             element.style.backgroundColor = '#7038F8';
             break;
 
