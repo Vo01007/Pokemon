@@ -1,15 +1,47 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-    
+
+    const pokemonList = JSON.parse(localStorage.getItem("pokemonList")) || []
     const pokemon = JSON.parse(localStorage.getItem("selectedPokemon"))
+    console.log('pokemon list' ,pokemonList)
     console.log('Данные из localStorage:', localStorage.getItem('selectedPokemon'))
     console.log('Парсинг покемона:', pokemon)
+
+    const nextButton = document.querySelector('.nextButton')
+    const prevButton = document.querySelector('.prevButton')
+    console.log('Previous button:', document.querySelector('.pagination-prev'))
+    console.log('Next button:', document.querySelector('.pagination-next'))
 
     if (!pokemon) {
         alert('Покемон не выбран.')
         window.location.href = '../../index.html'
         return
     }
+
+
+    const currentIndex = pokemonList.findIndex(item => item.id === pokemon.id)
+
+    if (currentIndex === -1) {
+        alert('Покемон не найден в списке')
+        return
+    }
+
     createPokemonCard(pokemon)
+    updatePaginationButtons(currentIndex, pokemonList)
+
+    nextButton.addEventListener('click', () => {
+        if (currentIndex < pokemonList.length -1){
+            localStorage.setItem('selectedPokemon', JSON.stringify(pokemonList[currentIndex + 1]))
+            window.location.reload()
+        }
+    })
+
+    prevButton.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            localStorage.setItem('selectedPokemon', JSON.stringify(pokemonList[currentIndex - 1]))
+            window.location.reload()
+        }
+    })
 
     const backButton = document.querySelector('.backButton')
     backButton.addEventListener('click', () => {
@@ -150,5 +182,30 @@ const updateElementStyle = (element,type) => {
 
         default:
             element.style.backgroundColor = 'gray'
+    }
+}
+
+const updatePaginationButtons = (currentIndex, pokemonList) => {
+    const nextButton = document.querySelector('.nextButton')
+    const prevButton = document.querySelector('.prevButton')
+    if (!prevButton || !nextButton) {
+        console.error('Pagination buttons are missing in the DOM.');
+        return;
+    }
+
+    if (currentIndex > 0) {
+        prevButton.disabled = false
+        prevButton.classList.remove('disabled')
+    }else {
+        prevButton.disabled = true
+        prevButton.classList.add('disabled')
+    }
+
+    if (currentIndex < pokemonList.length -1) {
+        nextButton.disabled = false
+        nextButton.classList.remove('disabled')
+    }else {
+        nextButton.disabled = true
+        nextButton.classList.add('disabled')
     }
 }

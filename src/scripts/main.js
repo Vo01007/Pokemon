@@ -1,6 +1,7 @@
 const apiUrl = 'https://pokeapi-proxy.freecodecamp.rocks/api/pokemon'
 
 const containerElement = document.querySelector('.infoContainer');
+let pokemonList = []
 
 async function fetchData() {
   try {
@@ -16,6 +17,7 @@ async function fetchData() {
     const detailedData = await fetchAdditionalData(firstFiftyPokemon)
     console.log('Доп данные:', detailedData)
 
+    localStorage.setItem('pokemonList', JSON.stringify(detailedData))
     createTable(detailedData);
   } catch (error) {
     console.error('Ошибка при получении данных:', error)
