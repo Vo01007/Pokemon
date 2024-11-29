@@ -41,6 +41,15 @@ header{
   color: white;
   border: none;
 }
+.backButton {
+  width: 5rem;
+  border-radius: 2rem;
+  height: 2rem;
+  background-color: #7825a5;
+  color: white;
+  border: none;
+  margin: 1rem 0 1rem;
+}
 .searchContainer input{
   width: 8rem;
   height: 1.4rem;
@@ -65,6 +74,11 @@ header{
   width: 10rem;
   margin: 2rem 0;
 }
+.pokemonCard {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
 .element{
   display: inline-block;
   padding: 0.5rem;
@@ -76,8 +90,11 @@ header{
   margin: 0.2rem;
   font-size: 0.7rem;
 }
+.stats {
+  width: 100%;
+}
 .stats table{
-  margin: 0 0 2rem;
+  /*margin: 0 0 2rem;*/
   color: white;
   text-align: center;
   width: 100%;

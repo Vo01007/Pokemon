@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 const createPokemonCard = (pokemon) => {
+    const container = document.querySelector('.container')
+    container.style.margin = '2rem auto'
     const containerElement = document.querySelector('.infoContainer')
     containerElement.innerHTML = ''
 
