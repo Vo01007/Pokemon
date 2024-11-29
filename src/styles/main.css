@@ -83,13 +83,10 @@ header{
   display: inline-block;
   padding: 0.5rem;
   border-radius: 0.2rem;
-  /*background-color: #fbcd3b;*/
   margin: 0.2rem 0 0.5rem 0.2rem;
-}
-.element p{
-  margin: 0.2rem;
   font-size: 0.7rem;
 }
+
 .stats {
   width: 100%;
 }
