@@ -55,8 +55,8 @@ const createPokemonCard = (pokemon) => {
     const containerElement = document.querySelector('.infoContainer')
     containerElement.innerHTML = ''
 
-    const card = document.createElement('div') 
-    card.classList.add('pokemonCard') 
+    const card = document.createElement('div')
+    card.classList.add('pokemonCard')
 
     const name = document.createElement('h4')
     name.classList.add('name')
@@ -74,30 +74,30 @@ const createPokemonCard = (pokemon) => {
 
     if (pokemon.types && Array.isArray(pokemon.types) && pokemon.types.length > 0) {
         pokemon.types.forEach((typeName) => {
-            const typeElement = document.createElement('div') 
-            typeElement.classList.add('element') 
-            typeElement.textContent = typeName.toUpperCase() 
+            const typeElement = document.createElement('div')
+            typeElement.classList.add('element')
+            typeElement.textContent = typeName.toUpperCase()
             updateElementStyle(typeElement, typeName)  // Применяем цвет к блоку
-            typesContainer.appendChild(typeElement) 
-        }) 
+            typesContainer.appendChild(typeElement)
+        })
     } else {
-        const typeElement = document.createElement('p') 
-        typeElement.textContent = 'N/A' 
-        typesContainer.appendChild(typeElement) 
+        const typeElement = document.createElement('p')
+        typeElement.textContent = 'N/A'
+        typesContainer.appendChild(typeElement)
     }
 
     const statsContainer = document.createElement('div')
     statsContainer.classList.add('stats')
     const statsTable = document.createElement('table')
 
-    const headerRow = document.createElement('tr') 
-    const baseHeader = document.createElement('th') 
-    baseHeader.textContent = 'Base' 
-    const statsHeader = document.createElement('th') 
-    statsHeader.textContent = 'Stats' 
-    headerRow.appendChild(baseHeader) 
-    headerRow.appendChild(statsHeader) 
-    statsTable.appendChild(headerRow) 
+    const headerRow = document.createElement('tr')
+    const baseHeader = document.createElement('th')
+    baseHeader.textContent = 'Base'
+    const statsHeader = document.createElement('th')
+    statsHeader.textContent = 'Stats'
+    headerRow.appendChild(baseHeader)
+    headerRow.appendChild(statsHeader)
+    statsTable.appendChild(headerRow)
 
     if (pokemon.stats && Array.isArray(pokemon.stats)) {
         pokemon.stats.forEach((stat) => {
@@ -111,14 +111,14 @@ const createPokemonCard = (pokemon) => {
             statsTable.appendChild(row)
         })
     }else {
-        const row = document.createElement('tr') 
-        const statNameCell = document.createElement('td') 
-        const statValueCell = document.createElement('td') 
-        statNameCell.textContent = 'No stats available' 
-        statValueCell.textContent = '-' 
-        row.appendChild(statNameCell) 
-        row.appendChild(statValueCell) 
-        statsTable.appendChild(row) 
+        const row = document.createElement('tr')
+        const statNameCell = document.createElement('td')
+        const statValueCell = document.createElement('td')
+        statNameCell.textContent = 'No stats available'
+        statValueCell.textContent = '-'
+        row.appendChild(statNameCell)
+        row.appendChild(statValueCell)
+        statsTable.appendChild(row)
     }
     statsContainer.appendChild(statsTable)
     card.appendChild(name)

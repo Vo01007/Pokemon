@@ -126,12 +126,12 @@ header{
 .paginationContainer{
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1rem auto;
   gap: 0.5rem;
 }
 
@@ -157,4 +157,38 @@ button.disabled {
   background-color: #ccc;
   cursor: not-allowed;
   opacity: 0.6;
+}
+.resultsInfo{
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem;
+  color: white;
+}
+.resultsInfo span{
+  margin: 0.5rem 0;
+}
+#rangeSelector {
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin: 0 0 0 8rem;
+}
+
+.pageButton {
+  margin: 0 0.3rem;
+
+  cursor: pointer;
+}
+
+.pageButton.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.pageButton:hover {
+  background-color: #0056b3;
+  color: white;
 }

@@ -27,9 +27,9 @@ async function fetchData() {
 
     localStorage.setItem('pokemonList', JSON.stringify(detailedData))
     pokemonList = detailedData
-      console.log('PokemonList:', pokemonList);
+    console.log('PokemonList:', pokemonList);
 
-      updateTable(detailedData)
+    updateTable(detailedData)
   } catch (error) {
     console.error('Ошибка при получении данных:', error)
   }
@@ -164,7 +164,7 @@ const createPaginationButtons = () => {
   paginationContainer.appendChild(nextButton)
 
   const rowsSelector = document.createElement('select')
-  [10, 25, 50].forEach((value) => {
+      [10, 25, 50].forEach((value) => {
     const option = document.createElement('option')
     option.value = value
     option.textContent = `${value} строк`
