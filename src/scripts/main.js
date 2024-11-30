@@ -98,12 +98,19 @@ const updateTable = () => {
       <td>${item.id}</td>
       <td>${item.name}</td>
       <td>${item.types.join(', ')}</td>
-      <td><button class="viewDetails">View</button></td>
     `;
-    row.querySelector('.viewDetails').addEventListener('click', () => {
+    const actionCell = document.createElement('td');
+    const eyeIcon = document.createElement('img');
+    eyeIcon.src = 'https://cdn.icon-icons.com/icons2/629/PNG/96/eye-visible-outlined-interface-symbol_icon-icons.com_57844.png';
+    eyeIcon.style.cursor = 'pointer';
+    eyeIcon.style.width = '2rem';
+    eyeIcon.addEventListener('click', () => {
       localStorage.setItem('selectedPokemon', JSON.stringify(item));
       window.location.href = './src/pages/pokemonCard.html';
     });
+    actionCell.appendChild(eyeIcon);
+
+    row.appendChild(actionCell);
     tbody.appendChild(row);
   });
   table.appendChild(tbody);
@@ -146,7 +153,7 @@ createTable = (data) => {
     const eyeIcon = document.createElement('img')
     eyeIcon.src = 'https://cdn.icon-icons.com/icons2/629/PNG/96/eye-visible-outlined-interface-symbol_icon-icons.com_57844.png'
     eyeIcon.style.cursor = 'pointer'
-    eyeIcon.style.width = '2rem'
+    eyeIcon.style.width = '0.7rem'
     eyeIcon.addEventListener('click', () => {
       localStorage.setItem('selectedPokemon', JSON.stringify(item))
       window.location.href = `./src/pages/pokemonCard.html`
@@ -166,21 +173,41 @@ createTable = (data) => {
 }
 
 const createPaginationButtons = () => {
-  paginationContainer.innerHTML = '';
-  const totalPages = Math.ceil(detailedData.length / rowsPerPage);
+  paginationContainer.innerHTML = ''
+  const totalPages = Math.ceil(detailedData.length / rowsPerPage)
+  const prevButton = document.createElement('button')
+  prevButton.textContent = '«'
+  prevButton.disabled = currentPage === 1
+  prevButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--
+      updateTable()
+    }
+  });
+  paginationContainer.appendChild(prevButton);
 
   for (let i = 1; i <= totalPages; i++) {
-    const pageButton = document.createElement('button');
-    pageButton.textContent = i;
+    const pageButton = document.createElement('button')
+    pageButton.textContent = i
     if (i === currentPage) {
-      pageButton.classList.add('active');
+      pageButton.classList.add('active')
     }
     pageButton.addEventListener('click', () => {
-      currentPage = i;
-      updateTable();
+      currentPage = i
+      updateTable()
     });
     paginationContainer.appendChild(pageButton);
   }
+  const nextButton = document.createElement('button')
+  nextButton.textContent = '»'
+  nextButton.disabled = currentPage === totalPages
+  nextButton.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      currentPage++
+      updateTable()
+    }
+  })
+  paginationContainer.appendChild(nextButton)
 }
 
 const filterTable = (searchInput) => {
