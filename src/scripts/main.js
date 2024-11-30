@@ -1,7 +1,14 @@
 const apiUrl = 'https://pokeapi-proxy.freecodecamp.rocks/api/pokemon'
 
-const containerElement = document.querySelector('.infoContainer');
-let pokemonList = []
+const containerElement = document.querySelector('.infoContainer')
+const paginationContainer = document.createElement('div')
+paginationContainer.classList.add('pagination')
+containerElement.appendChild(paginationContainer)
+
+let detailedData = []
+let currentPage = 1
+let rowsPerPage = 10
+
 
 async function fetchData() {
   try {
@@ -14,11 +21,15 @@ async function fetchData() {
 
     data = responseData.results
     const firstFiftyPokemon = data.slice(0, 50)
-    const detailedData = await fetchAdditionalData(firstFiftyPokemon)
+    detailedData = await fetchAdditionalData(firstFiftyPokemon)
     console.log('Доп данные:', detailedData)
 
+
     localStorage.setItem('pokemonList', JSON.stringify(detailedData))
-    createTable(detailedData);
+    pokemonList = detailedData
+      console.log('PokemonList:', pokemonList);
+
+      updateTable(detailedData)
   } catch (error) {
     console.error('Ошибка при получении данных:', error)
   }
@@ -54,13 +65,24 @@ async function fetchAdditionalData(pokemonList) {
   return Promise.all(promises).then((results) => results.filter(Boolean))
 }
 
+const updateTable = (data) => {
+
+  const start = (currentPage - 1) *rowsPerPage
+  const end = start + rowsPerPage
+  const paginationData = data.slice(start, end)
+
+  createTable(paginationData)
+  createPaginationButtons(data)
+}
+
 
 createTable = (data) => {
   containerElement.innerHTML = '';
+  containerElement.appendChild(paginationContainer)
 
   const table = document.createElement('table')
   table.classList.add('pokemonTable')
-  const thead = document.createElement('thead');
+  const thead = document.createElement('thead')
   const tbody = document.createElement('tbody')
 
   const headers = ['ID', 'Name', 'Type', 'Height', 'Actions'];
@@ -90,7 +112,7 @@ createTable = (data) => {
     eyeIcon.style.width = '2rem'
     eyeIcon.addEventListener('click', () => {
       localStorage.setItem('selectedPokemon', JSON.stringify(item))
-      window.location.href = './src/pages/pokemonCard.html'
+      window.location.href = `./src/pages/pokemonCard.html`
     })
     actionCell.appendChild(eyeIcon)
 
@@ -104,6 +126,60 @@ createTable = (data) => {
   table.appendChild(thead);
   table.appendChild(tbody)
   containerElement.appendChild(table)
+}
+
+const createPaginationButtons = () => {
+  paginationContainer.innerHTML = ''
+
+  const totalPages = Math.ceil(detailedData.length / rowsPerPage)
+
+  const prevButton = document.createElement('button')
+  prevButton.textContent = '◀'
+  prevButton.disabled = currentPage === 1
+  prevButton.addEventListener('click', () => {
+    currentPage--
+    updateTable(detailedData)
+  })
+  paginationContainer.appendChild(prevButton)
+
+  for (let i = 1; i <= totalPages; i++){
+    const pageButton = document.createElement('button')
+    pageButton.textContent = i
+    pageButton.classList.add('pageButton')
+    if (i === currentPage) {
+      pageButton.classList.add('active')
+    }
+    pageButton.addEventListener('click', () => {
+      currentPage = i
+      updateTable(detailedData)
+    })
+    paginationContainer.appendChild(pageButton)
+  }
+  const nextButton = document.createElement('button')
+  nextButton.textContent = '▶'
+  nextButton.addEventListener('click', () => {
+    currentPage++
+    updateTable(detailedData)
+  })
+  paginationContainer.appendChild(nextButton)
+
+  const rowsSelector = document.createElement('select')
+  [10, 25, 50].forEach((value) => {
+    const option = document.createElement('option')
+    option.value = value
+    option.textContent = `${value} строк`
+    if (value === rowsPerPage) option.selected = true
+    rowsSelector.appendChild(option)
+  })
+  rowsSelector.addEventListener('change', (e) => {
+    console.log('Selected rows per page:', e.target.value)
+    rowsPerPage = parseInt(e.target.value, 10)
+    currentPage = 1
+    updateTable(detailedData)
+  })
+  paginationContainer.appendChild(rowsSelector)
+  console.log('Rows selector added to pagination container:', rowsSelector);
+
 }
 
 const filterTable = (searchInput) => {
@@ -147,7 +223,7 @@ document.querySelector('.clearButton').addEventListener('click', () => {
   document.querySelector('.searchInput').value = ''; // Очистить поле ввода
   const rows = document.querySelectorAll('.pokemonTable tbody tr');
   rows.forEach((row) => {
-    row.style.display = ''; // Показать все строки
+    row.style.display = '';
   });
 });
 

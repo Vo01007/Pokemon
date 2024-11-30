@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!pokemon) {
         alert('Покемон не выбран.')
-        window.location.href = '../../index.html'
+        window.location.href = `../../index.html`
         return
     }
 
