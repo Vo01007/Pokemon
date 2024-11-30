@@ -1,14 +1,19 @@
 const apiUrl = 'https://pokeapi-proxy.freecodecamp.rocks/api/pokemon'
 
 const containerElement = document.querySelector('.infoContainer')
-const paginationContainer = document.createElement('div')
-paginationContainer.classList.add('pagination')
-containerElement.appendChild(paginationContainer)
+const paginationContainer = document.querySelector('.pagination');
+const rangeSelector = document.getElementById('rangeSelector');
+const resultsRange = document.getElementById('resultsRange');
 
 let detailedData = []
 let currentPage = 1
-let rowsPerPage = 10
+let rowsPerPage = parseInt(rangeSelector.value, 10)
 
+rangeSelector.addEventListener('change', (e) => {
+  rowsPerPage = parseInt(e.target.value, 10);
+  currentPage = 1
+  updateTable();
+});
 
 async function fetchData() {
   try {
@@ -26,10 +31,8 @@ async function fetchData() {
 
 
     localStorage.setItem('pokemonList', JSON.stringify(detailedData))
-    pokemonList = detailedData
-    console.log('PokemonList:', pokemonList);
 
-    updateTable(detailedData)
+    updateTable()
   } catch (error) {
     console.error('Ошибка при получении данных:', error)
   }
@@ -65,14 +68,48 @@ async function fetchAdditionalData(pokemonList) {
   return Promise.all(promises).then((results) => results.filter(Boolean))
 }
 
-const updateTable = (data) => {
+const updateTable = () => {
 
   const start = (currentPage - 1) *rowsPerPage
   const end = start + rowsPerPage
-  const paginationData = data.slice(start, end)
+  const paginationData = detailedData.slice(start, end)
 
-  createTable(paginationData)
-  createPaginationButtons(data)
+  resultsRange.textContent = `${start + 1} - ${Math.min(end, detailedData.length)} of ${detailedData.length}`;
+
+  // Очищаем контейнер перед обновлением таблицы
+  containerElement.innerHTML = '';
+  const table = document.createElement('table');
+  table.classList.add('pokemonTable');
+
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  ['ID', 'Name', 'Type', 'Actions'].forEach(headerText => {
+    const th = document.createElement('th');
+    th.textContent = headerText;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  paginationData.forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item.id}</td>
+      <td>${item.name}</td>
+      <td>${item.types.join(', ')}</td>
+      <td><button class="viewDetails">View</button></td>
+    `;
+    row.querySelector('.viewDetails').addEventListener('click', () => {
+      localStorage.setItem('selectedPokemon', JSON.stringify(item));
+      window.location.href = './src/pages/pokemonCard.html';
+    });
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+  containerElement.appendChild(table);
+
+  createPaginationButtons();
 }
 
 
@@ -129,57 +166,21 @@ createTable = (data) => {
 }
 
 const createPaginationButtons = () => {
-  paginationContainer.innerHTML = ''
+  paginationContainer.innerHTML = '';
+  const totalPages = Math.ceil(detailedData.length / rowsPerPage);
 
-  const totalPages = Math.ceil(detailedData.length / rowsPerPage)
-
-  const prevButton = document.createElement('button')
-  prevButton.textContent = '◀'
-  prevButton.disabled = currentPage === 1
-  prevButton.addEventListener('click', () => {
-    currentPage--
-    updateTable(detailedData)
-  })
-  paginationContainer.appendChild(prevButton)
-
-  for (let i = 1; i <= totalPages; i++){
-    const pageButton = document.createElement('button')
-    pageButton.textContent = i
-    pageButton.classList.add('pageButton')
+  for (let i = 1; i <= totalPages; i++) {
+    const pageButton = document.createElement('button');
+    pageButton.textContent = i;
     if (i === currentPage) {
-      pageButton.classList.add('active')
+      pageButton.classList.add('active');
     }
     pageButton.addEventListener('click', () => {
-      currentPage = i
-      updateTable(detailedData)
-    })
-    paginationContainer.appendChild(pageButton)
+      currentPage = i;
+      updateTable();
+    });
+    paginationContainer.appendChild(pageButton);
   }
-  const nextButton = document.createElement('button')
-  nextButton.textContent = '▶'
-  nextButton.addEventListener('click', () => {
-    currentPage++
-    updateTable(detailedData)
-  })
-  paginationContainer.appendChild(nextButton)
-
-  const rowsSelector = document.createElement('select')
-      [10, 25, 50].forEach((value) => {
-    const option = document.createElement('option')
-    option.value = value
-    option.textContent = `${value} строк`
-    if (value === rowsPerPage) option.selected = true
-    rowsSelector.appendChild(option)
-  })
-  rowsSelector.addEventListener('change', (e) => {
-    console.log('Selected rows per page:', e.target.value)
-    rowsPerPage = parseInt(e.target.value, 10)
-    currentPage = 1
-    updateTable(detailedData)
-  })
-  paginationContainer.appendChild(rowsSelector)
-  console.log('Rows selector added to pagination container:', rowsSelector);
-
 }
 
 const filterTable = (searchInput) => {
